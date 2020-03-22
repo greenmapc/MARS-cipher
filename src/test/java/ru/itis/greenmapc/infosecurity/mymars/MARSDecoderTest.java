@@ -2,12 +2,11 @@ package ru.itis.greenmapc.infosecurity.mymars;
 
 import org.apache.commons.codec.binary.Hex;
 import org.junit.jupiter.api.Test;
+import ru.itis.greenmapc.infosecurity.AbstractTest;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class MARSDecoderTest extends AbstractTest {
-
-    private MARS mars = new MARS();
 
     @Test
     public void decoderTest1() {
@@ -18,7 +17,8 @@ public class MARSDecoderTest extends AbstractTest {
         var keyBytes = hexToByte(key);
         var inBytes = hexToByte(in);
 
-        var result = Hex.encodeHexString(mars.decrypt(inBytes, keyBytes));
+        var mars = new MARS(keyBytes);
+        var result = Hex.encodeHexString(mars.decryptBlock(inBytes));
 
         assertEquals(expectedResult, result.toUpperCase());
     }
@@ -32,7 +32,8 @@ public class MARSDecoderTest extends AbstractTest {
         var keyBytes = hexToByte(key);
         var inBytes = hexToByte(in);
 
-        var result = Hex.encodeHexString(mars.decrypt(inBytes, keyBytes));
+        var mars = new MARS(keyBytes);
+        var result = Hex.encodeHexString(mars.decryptBlock(inBytes));
 
         assertEquals(expectedResult, result.toUpperCase());
     }
@@ -46,7 +47,8 @@ public class MARSDecoderTest extends AbstractTest {
         var keyBytes = hexToByte(key);
         var inBytes = hexToByte(in);
 
-        var result = Hex.encodeHexString(mars.decrypt(inBytes, keyBytes));
+        var mars = new MARS(keyBytes);
+        var result = Hex.encodeHexString(mars.decryptBlock(inBytes));
 
         assertEquals(expectedResult, result.toUpperCase());
     }
@@ -60,7 +62,8 @@ public class MARSDecoderTest extends AbstractTest {
         var keyBytes = hexToByte(key);
         var inBytes = hexToByte(in);
 
-        var result = Hex.encodeHexString(mars.decrypt(inBytes, keyBytes));
+        var mars = new MARS(keyBytes);
+        var result = Hex.encodeHexString(mars.decryptBlock(inBytes));
 
         assertEquals(expectedResult, result.toUpperCase());
     }

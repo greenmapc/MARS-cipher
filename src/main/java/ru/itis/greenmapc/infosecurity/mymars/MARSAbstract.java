@@ -152,8 +152,6 @@ public abstract class MARSAbstract {
     }
 
     public abstract byte[] decryptBlock(byte[] in);
-    public abstract byte[] encrypt(byte[] in,byte[] key);
     public abstract byte[] blockEncryption(byte[] in);
-    public abstract byte[] decrypt(byte[] in,byte[] key);
 
 }

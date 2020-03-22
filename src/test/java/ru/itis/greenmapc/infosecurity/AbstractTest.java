@@ -1,17 +1,17 @@
-package ru.itis.greenmapc.infosecurity.mymars;
+package ru.itis.greenmapc.infosecurity;
 
 import java.math.BigInteger;
 
 public abstract class AbstractTest {
 
     protected static byte[] hexToByte(String hexString) {
-        byte[] keyByte = new byte[16];
+        byte[] keyByte = new byte[hexString.length() / 2];
         String keyBinary = new BigInteger(hexString, 16).toString(2);
 
         int k = 0;
-        if (keyBinary.length() < 128) {
+        if (keyBinary.length() < keyByte.length * 8) {
             var tmp = new StringBuffer();
-            for (int i = 0; i < 128 - keyBinary.length(); i ++) {
+            for (int i = 0; i < keyByte.length * 8 - keyBinary.length(); i ++) {
                 tmp.append("0");
             }
             tmp.append(keyBinary);

@@ -1,11 +1,15 @@
 package ru.itis.greenmapc.infosecurity.mymars;
 
-import lombok.NoArgsConstructor;
-
 import java.util.Arrays;
 
-@NoArgsConstructor
 public class MARS extends MARSAbstract {
+
+    private final byte[] key;
+
+    public MARS(byte[] key) {
+        this.key = key;
+        K = expandKey(key);
+    }
 
     @Override
     public byte[] blockEncryption(byte[] in) {
@@ -133,8 +137,7 @@ public class MARS extends MARSAbstract {
             data[i] = 0;
         int off = 0;
         for(int i = 0;i<data.length;i++){
-            data[i] =
-                ((in[off++]&0xff))|
+            data[i] = ((in[off++]&0xff)) |
                 ((in[off++] & 0xff) << 8) |
                 ((in[off++] & 0xff) << 16) |
                 ((in[off++] & 0xff) << 24);
@@ -211,8 +214,6 @@ public class MARS extends MARSAbstract {
 
         }
 
-
-
         A -= K[0];
         B -= K[1];
         C -= K[2];
@@ -226,56 +227,5 @@ public class MARS extends MARSAbstract {
 
         return tmp;
     }
-
-    @Override
-    public byte[] encrypt(byte[] in, byte[] key) {
-        K = expandKey(key);
-
-        byte[] tmp = new byte[in.length];
-        byte[] block = new byte[16];
-
-        int count = 0;
-        int i;
-
-        for (i = 0; i < in.length; i++) {
-            if (i > 0 && i % 16 == 0) {
-                block = blockEncryption(block);
-                System.arraycopy(block, 0, tmp, i - 16, block.length);
-            }
-            if (i < in.length)
-                block[i % 16] = in[i];
-            else{
-                block[i % 16] = in[count % 16];
-                count++;
-            }
-        }
-        if(block.length == 16){
-            block = blockEncryption(block);
-            System.arraycopy(block, 0, tmp, i - 16, block.length);
-        }
-
-        return tmp;
-    }
-
-    @Override
-    public byte[] decrypt(byte[] in, byte[] key) {
-        byte[] tmp = new byte[in.length];
-        byte[] block = new byte[16];
-        K = expandKey(key);
-        int i;
-        for (i = 0; i < in.length; i++) {
-            if (i > 0 && i % 16 == 0) {
-                block = decryptBlock(block);
-                System.arraycopy(block, 0, tmp, i - 16, block.length);
-            }
-            if (i < in.length)
-                block[i % 16] = in[i];
-        }
-        block = decryptBlock(block);
-        System.arraycopy(block, 0, tmp, i - 16, block.length);
-
-        return tmp;
-    }
-
 
 }
