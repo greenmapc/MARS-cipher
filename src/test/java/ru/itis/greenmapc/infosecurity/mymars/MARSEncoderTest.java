@@ -4,9 +4,6 @@ import org.apache.commons.codec.binary.Hex;
 import org.junit.jupiter.api.Test;
 import ru.itis.greenmapc.infosecurity.AbstractTest;
 
-import java.math.BigInteger;
-import java.time.LocalDateTime;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class MARSEncoderTest extends AbstractTest {
@@ -71,25 +68,109 @@ public class MARSEncoderTest extends AbstractTest {
         assertEquals(expectedResult, result.toUpperCase());
     }
 
-    private byte[] generateInitVector() {
-        byte[] result = new byte[16];
-        var time = LocalDateTime.now();
-        var weekday = time.getDayOfYear();
-        var hours = time.getHour();
-        var minutes = time.getMinute();
-        var seconds = time.getSecond();
+    @Test
+    public void encoderTest5() {
+        var expectedResult = "A4B737340AE6D2CAFD930BA97D86129F";
+        var key = "86EDF4DA31824CABEF6A4637C40B0BAB";
+        var in = "4DF955AD5B398D66408D620A2B27E1A9";
 
-        var first4Bytes = BigInteger.valueOf(weekday).toByteArray();
-        var second4Bytes = BigInteger.valueOf(hours).toByteArray();
-        var third4Bytes = BigInteger.valueOf(minutes).toByteArray();
-        var fourth4Bytes = BigInteger.valueOf(seconds).toByteArray();
+        var keyBytes = hexToByte(key);
+        var inBytes = hexToByte(in);
 
-        System.arraycopy(first4Bytes, 0, result, 4 - first4Bytes.length % 4, first4Bytes.length);
-        System.arraycopy(second4Bytes, 0, result, 8 - second4Bytes.length % 4, second4Bytes.length);
-        System.arraycopy(third4Bytes, 0, result, 12 - third4Bytes.length % 4, third4Bytes.length);
-        System.arraycopy(fourth4Bytes, 0, result, 16 - fourth4Bytes.length % 4, fourth4Bytes.length);
+        var mars = new MARS(keyBytes);
+        var result = Hex.encodeHexString(mars.blockEncryption(inBytes));
 
-        return result;
+        assertEquals(expectedResult, result.toUpperCase());
+    }
+
+    @Test
+    public void encoderTest6() {
+        var expectedResult = "A4B737340AE6D2CAFD930BA97D86129F";
+        var key = "86EDF4DA31824CABEF6A4637C40B0BAB";
+        var in = "4DF955AD5B398D66408D620A2B27E1A9";
+
+        var keyBytes = hexToByte(key);
+        var inBytes = hexToByte(in);
+
+        var mars = new MARS(keyBytes);
+        var result = Hex.encodeHexString(mars.blockEncryption(inBytes));
+
+        assertEquals(expectedResult, result.toUpperCase());
+    }
+
+    @Test
+    public void encoderTest7() {
+        var expectedResult = "97778747D60E425C2B4202599DB856FB";
+        var key = "000000000000000000000000000000000000000000000000";
+        var in = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+
+        var keyBytes = hexToByte(key);
+        var inBytes = hexToByte(in);
+
+        var mars = new MARS(keyBytes);
+        var result = Hex.encodeHexString(mars.blockEncryption(inBytes));
+
+        assertEquals(expectedResult, result.toUpperCase());
+    }
+
+    @Test
+    public void encoderTest8() {
+        var expectedResult = "4FA0E5F64893131712F01408D233E9F7";
+        var key = "D158860838874D9500000000000000000000000000000000";
+        var in = "93A953A82C10411DD158860838874D95";
+
+        var keyBytes = hexToByte(key);
+        var inBytes = hexToByte(in);
+
+        var mars = new MARS(keyBytes);
+        var result = Hex.encodeHexString(mars.blockEncryption(inBytes));
+
+        assertEquals(expectedResult, result.toUpperCase());
+    }
+
+    @Test
+    public void encoderTest10() {
+        var expectedResult = "F706BC0FD97E28B6F1AF4E17D8755FFF";
+        var key = "791739A58B04581A93A953A82C10411DD158860838874D95";
+        var in = "6761C42D3E6142D2A84FBFADB383158F";
+
+        var keyBytes = hexToByte(key);
+        var inBytes = hexToByte(in);
+
+        var mars = new MARS(keyBytes);
+        var result = Hex.encodeHexString(mars.blockEncryption(inBytes));
+
+        assertEquals(expectedResult, result.toUpperCase());
+    }
+
+    @Test
+    public void encoderTest11() {
+        var expectedResult = "0F4B897EA014D21FBC20F1054A42F719";
+        var key = "0000000000000000000000000000000000000000000000000000000000000000";
+        var in = "62E45B4CF3477F1DD65063729D9ABA8F";
+
+        var keyBytes = hexToByte(key);
+        var inBytes = hexToByte(in);
+
+        var mars = new MARS(keyBytes);
+        var result = Hex.encodeHexString(mars.blockEncryption(inBytes));
+
+        assertEquals(expectedResult, result.toUpperCase());
+    }
+
+    @Test
+    public void encoderTest12() {
+        var expectedResult = "458335D95EA42A9F4DCCD41AECC2390D";
+        var key = "FBA167983E7AEF22317CE28C02AAE1A3E8E5CC3CEDBEA82A99DBC39AD65E7227";
+        var in = "1344ABA4D3C44708A8A72116D4F49384";
+
+        var keyBytes = hexToByte(key);
+        var inBytes = hexToByte(in);
+
+        var mars = new MARS(keyBytes);
+        var result = Hex.encodeHexString(mars.blockEncryption(inBytes));
+
+        assertEquals(expectedResult, result.toUpperCase());
     }
 
 }
