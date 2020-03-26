@@ -72,6 +72,26 @@ class CFBCipherModeTest extends AbstractTest {
         assertEquals(in, decResult.toUpperCase());
     }
 
+    @Test
+    void applyMode4() {
+        var key = "80000000000000000000000000000000";
+        var in = "0000000000000000000000000000000000000000";
+
+        var keyBytes = hexToByte(key);
+        var inBytes = hexToByte(in);
+
+        var cfbEncryptionMode = new CFBCipherMode();
+        var mars = new MARS(keyBytes);
+        var initVector = generateInitVector();
+
+        var encResult = Hex.encodeHexString(cfbEncryptionMode.encryptWithMode(inBytes, mars::blockEncryption, initVector));
+        var decResult = Hex.encodeHexString(cfbEncryptionMode.decryptWithMode(hexToByte(encResult), mars::blockEncryption, initVector));
+
+        assertNotNull(encResult);
+        assertNotNull(decResult);
+        assertEquals(in, decResult.toUpperCase());
+    }
+
     public byte[] generateInitVector() {
         byte[] result = new byte[16];
         var time = LocalDateTime.now();
