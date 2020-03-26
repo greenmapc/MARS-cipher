@@ -123,7 +123,6 @@ public class MARS extends MARSAbstract {
             tmp[i] = (byte)((data[i/4] >>> (i%4)*8) & 0xff);
         }
 
-        System.out.println(Arrays.toString(tmp));
         return tmp;
     }
 
