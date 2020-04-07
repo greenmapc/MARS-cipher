@@ -7,6 +7,7 @@ import ru.itis.greenmapc.infosecurity.mymars.MARS;
 
 import java.math.BigInteger;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -73,9 +74,50 @@ class CFBCipherModeTest extends AbstractTest {
     }
 
     @Test
+    void applyMode5() {
+        var key = "00000000000000000000000000000000";
+        var in = "0000000000000000000000000000000000000000000000000000000000800000";
+
+        var keyBytes = hexToByte(key);
+        var inBytes = hexToByte(in);
+
+        var cfbEncryptionMode = new CFBCipherMode();
+        var mars = new MARS(keyBytes);
+        var initVector = generateInitVector();
+
+        var encResult = Hex.encodeHexString(cfbEncryptionMode.encryptWithMode(inBytes, mars::blockEncryption, initVector));
+        var decResult = Hex.encodeHexString(cfbEncryptionMode.decryptWithMode(hexToByte(encResult), mars::blockEncryption, initVector));
+
+        assertNotNull(encResult);
+        assertNotNull(decResult);
+        assertEquals(in, decResult.toUpperCase());
+    }
+
+    @Test
+    void applyMode6() {
+        var key = "00000000000000000000000000000000";
+        var in = "0000000000000000000000000000000000000000080";
+
+        var keyBytes = hexToByte(key);
+        var inBytes = hexToByte(in);
+
+        var cfbEncryptionMode = new CFBCipherMode();
+        var mars = new MARS(keyBytes);
+        var initVector = generateInitVector();
+
+        var encResult = cfbEncryptionMode.encryptWithMode(inBytes, mars::blockEncryption, initVector);
+        var encHexResult = Hex.encodeHexString(encResult);
+        var decResult = cfbEncryptionMode.decryptWithMode(hexToByte(encHexResult), mars::blockEncryption, initVector);
+        var decHexResult = Hex.encodeHexString(decResult);
+        assertNotNull(encResult);
+        assertNotNull(decResult);
+        assertArrayEquals(inBytes, decResult);
+    }
+
+    @Test
     void applyMode4() {
-        var key = "80000000000000000000000000000000";
-        var in = "0000000000000000000000000000000000000000";
+        var key = "10000000000000000000000000000000";
+        var in = "000000000000000000000000000000000000000000";
 
         var keyBytes = hexToByte(key);
         var inBytes = hexToByte(in);

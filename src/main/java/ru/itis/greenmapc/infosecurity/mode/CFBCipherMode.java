@@ -70,14 +70,11 @@ public class CFBCipherMode {
         int mod = in.length % BLOCK_SIZE;
         int additionalLength =  mod != 0 ? BLOCK_SIZE - mod : 0;
 
-        byte[] padding = new byte[additionalLength];
+        byte padding = 0;
         if (mod != 0) {
-            padding[0] = (byte) 0x80;
+            padding = (byte) (BLOCK_SIZE - mod);
         }
         byte[] block = new byte[BLOCK_SIZE];
-
-
-        int count = 0;
 
         int i;
         for (i = 0; i < in.length + additionalLength; i++) {
@@ -87,8 +84,7 @@ public class CFBCipherMode {
             if (i < in.length)
                 block[i % BLOCK_SIZE] = in[i];
             else{
-                block[i % BLOCK_SIZE] = padding[count % BLOCK_SIZE];
-                count++;
+                block[i % BLOCK_SIZE] = padding;
             }
         }
         blocks.add(Arrays.copyOf(block, block.length));
@@ -96,22 +92,26 @@ public class CFBCipherMode {
         return blocks;
     }
 
-    private static byte[] deletePadding(byte[] input) {
-        int count = 0;
+    private byte[] deletePadding(byte[] input) {
+        boolean hasPadding = checkPadding(input);
+        if (hasPadding) {
+            int padding = input[input.length - 1];
+            byte[] tmp = new byte[input.length - padding];
+            System.arraycopy(input, 0, tmp, 0, tmp.length);
+            return tmp;
+        }
+        return input;
+    }
 
-        int i = input.length - 1;
-        while (i >= 0 && input[i] == 0) {
+    private boolean checkPadding(byte[] in) {
+        int padding = in[in.length - 1];
+        int i = in.length - 1;
+        int count = 0;
+        while(i >= 0 && in[i] == padding) {
             count++;
             i--;
         }
-
-        if (count != 0 && count != 16) {
-            byte[] tmp = new byte[input.length - count - 1];
-            System.arraycopy(input, 0, tmp, 0, tmp.length);
-            return tmp;
-        } else {
-            return input;
-        }
+        return count == padding;
     }
 
 }
